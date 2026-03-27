@@ -2,13 +2,13 @@
 CDON Marketplace — Garden & Outdoor: The Nordic Spring Opportunity
 Streamlit Report Portal — Presentation-style multi-slide report
 """
-
+ 
 import streamlit as st
 import plotly.graph_objects as go
 import plotly.express as px
 from fpdf import FPDF
 import datetime, io, base64
-
+ 
 # ── Page Config ─────────────────────────────────────────────────
 st.set_page_config(
     page_title="Garden & Outdoor: The Nordic Spring Opportunity",
@@ -16,7 +16,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
-
+ 
 # ── Design Tokens ───────────────────────────────────────────────
 # Matching the Apps Script reference: dark green gradient, gold accents
 COLORS = {
@@ -35,24 +35,24 @@ COLORS = {
     "text_muted": "rgba(240,240,236,0.45)",
     "border": "rgba(255,255,255,0.08)",
 }
-
+ 
 # ── CSS ─────────────────────────────────────────────────────────
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
+ 
 /* Hide Streamlit chrome */
 #MainMenu {{visibility: hidden;}}
 footer {{visibility: hidden;}}
 header {{visibility: hidden;}}
 .block-container {{ padding-top: 0 !important; max-width: 1400px; }}
-
+ 
 /* Dark green background */
 .stApp {{
     background: linear-gradient(165deg, #1a2e1a 0%, #1a3520 30%, #1e3a1e 60%, #1a2e1a 100%);
     min-height: 100vh;
 }}
-
+ 
 /* Gold horizontal rule */
 .gold-rule {{
     width: 60px; height: 4px;
@@ -60,7 +60,7 @@ header {{visibility: hidden;}}
     border: none; margin: 20px 0;
     border-radius: 2px;
 }}
-
+ 
 /* Slide container */
 .slide {{
     min-height: 85vh;
@@ -68,7 +68,7 @@ header {{visibility: hidden;}}
     position: relative;
     border-bottom: 1px solid {COLORS['border']};
 }}
-
+ 
 /* Top bar */
 .top-bar {{
     position: fixed;
@@ -103,7 +103,7 @@ header {{visibility: hidden;}}
     transition: color 0.2s;
 }}
 .top-bar-nav a:hover {{ color: {COLORS['gold']}; }}
-
+ 
 /* Section label */
 .section-label {{
     color: {COLORS['gold']};
@@ -114,7 +114,7 @@ header {{visibility: hidden;}}
     text-transform: uppercase;
     margin-bottom: 8px;
 }}
-
+ 
 /* Title */
 .slide-title {{
     color: {COLORS['white']};
@@ -140,7 +140,7 @@ header {{visibility: hidden;}}
     line-height: 1.6;
     max-width: 700px;
 }}
-
+ 
 /* KPI card */
 .kpi-card {{
     background: {COLORS['bg_card']};
@@ -174,7 +174,7 @@ header {{visibility: hidden;}}
     font-size: 11px;
     margin-top: 6px;
 }}
-
+ 
 /* Info card */
 .info-card {{
     background: {COLORS['bg_card']};
@@ -215,7 +215,7 @@ header {{visibility: hidden;}}
     margin-right: 10px;
     vertical-align: middle;
 }}
-
+ 
 /* Table */
 .data-table {{
     width: 100%;
@@ -241,7 +241,7 @@ header {{visibility: hidden;}}
 .data-table tr:hover td {{
     background: rgba(255,255,255,0.03);
 }}
-
+ 
 /* Footer */
 .slide-footer {{
     display: flex;
@@ -251,7 +251,7 @@ header {{visibility: hidden;}}
     font-size: 11px;
     color: {COLORS['text_muted']};
 }}
-
+ 
 /* Flags */
 .flag-row {{
     display: flex;
@@ -275,7 +275,7 @@ header {{visibility: hidden;}}
     letter-spacing: 2px;
     margin-left: 12px;
 }}
-
+ 
 /* Metric highlight */
 .metric-highlight {{
     display: inline-block;
@@ -286,7 +286,7 @@ header {{visibility: hidden;}}
     font-weight: 700;
     font-size: 14px;
 }}
-
+ 
 /* Streamlit tab overrides */
 .stTabs [data-baseweb="tab-list"] {{
     gap: 0;
@@ -310,7 +310,7 @@ header {{visibility: hidden;}}
 .stTabs [data-baseweb="tab-panel"] {{
     padding-top: 24px;
 }}
-
+ 
 /* Download button override */
 .stDownloadButton > button {{
     background: transparent !important;
@@ -327,7 +327,7 @@ header {{visibility: hidden;}}
 .stDownloadButton > button:hover {{
     background: rgba(201, 168, 76, 0.12) !important;
 }}
-
+ 
 /* Plotly chart container */
 [data-testid="stPlotlyChart"] {{
     background: {COLORS['bg_card']};
@@ -335,7 +335,7 @@ header {{visibility: hidden;}}
     border-radius: 12px;
     padding: 16px;
 }}
-
+ 
 /* Metric override */
 [data-testid="stMetric"] {{
     background: {COLORS['bg_card']};
@@ -355,15 +355,15 @@ header {{visibility: hidden;}}
     font-size: 24px !important;
     font-weight: 800 !important;
 }}
-
+ 
 </style>
 """, unsafe_allow_html=True)
-
-
+ 
+ 
 # ══════════════════════════════════════════════════════════════════
 # PUBLIC DATA — Garden & Outdoor Nordic Market (illustrative)
 # ══════════════════════════════════════════════════════════════════
-
+ 
 # Market-level estimates (public / illustrative)
 market_data = {
     "total_nordic_ecom": 35.2,  # bn EUR
@@ -375,7 +375,7 @@ market_data = {
     "mobile_share": 58,  # %
     "repeat_rate": 34,  # %
 }
-
+ 
 # Country breakdown
 countries = {
     "Sweden": {"flag_label": "SE", "population": 10.5, "ecom_penetration": 84, "garden_index": 112, "market_size": 620, "growth": 14.1, "aov": 95, "top_categories": ["Outdoor Furniture", "BBQ & Grills", "Garden Tools"]},
@@ -383,14 +383,14 @@ countries = {
     "Norway": {"flag_label": "NO", "population": 5.5, "ecom_penetration": 82, "garden_index": 98, "market_size": 340, "growth": 10.5, "aov": 105, "top_categories": ["Heated Outdoor", "Garden Tools", "BBQ & Grills"]},
     "Finland": {"flag_label": "FI", "population": 5.6, "ecom_penetration": 79, "garden_index": 95, "market_size": 350, "growth": 13.2, "aov": 78, "top_categories": ["Sauna Accessories", "Garden Furniture", "Outdoor Decor"]},
 }
-
+ 
 # Monthly seasonality (% of annual sales)
 seasonality = {
     "Jan": 2.8, "Feb": 3.5, "Mar": 8.2, "Apr": 14.5, "May": 18.3,
     "Jun": 15.8, "Jul": 12.4, "Aug": 8.5, "Sep": 5.8, "Oct": 4.2,
     "Nov": 3.5, "Dec": 2.5,
 }
-
+ 
 # Top subcategories on CDON
 subcategories = [
     {"name": "Outdoor Furniture", "share": 22.4, "growth": 18.5, "aov": 142, "items": 12400},
@@ -404,7 +404,7 @@ subcategories = [
     {"name": "Pest Control & Plant Care", "share": 4.9, "growth": 7.2, "aov": 28, "items": 6400},
     {"name": "Outdoor Textiles & Cushions", "share": 4.9, "growth": 19.8, "aov": 55, "items": 7200},
 ]
-
+ 
 # Competitive landscape
 competitors = [
     {"name": "Byggmax", "type": "Specialist", "strength": "Physical + online", "garden_focus": "High", "price_pos": "Mid"},
@@ -413,7 +413,7 @@ competitors = [
     {"name": "Amazon.se", "type": "Marketplace", "strength": "Assortment breadth", "garden_focus": "Low-Med", "price_pos": "Competitive"},
     {"name": "XXL", "type": "Sports/Outdoor", "strength": "Outdoor lifestyle", "garden_focus": "Low", "price_pos": "Mid"},
 ]
-
+ 
 # Weekly CDON search trends (index, 100 = avg)
 search_trends = {
     "W1": 28, "W2": 25, "W3": 30, "W4": 32, "W5": 35, "W6": 38,
@@ -422,73 +422,73 @@ search_trends = {
     "W18": 185, "W19": 195, "W20": 188, "W21": 175, "W22": 162,
     "W23": 148, "W24": 135, "W25": 120, "W26": 108,
 }
-
-
+ 
+ 
 # ══════════════════════════════════════════════════════════════════
 # PDF GENERATION
 # ══════════════════════════════════════════════════════════════════
-
+ 
 def generate_report_pdf():
     pdf = FPDF(orientation="L", unit="mm", format="A4")
     pdf.set_auto_page_break(auto=True, margin=15)
-
+ 
     bg = (26, 46, 26)
     panel = (31, 61, 34)
     gold = (201, 168, 76)
     white = (240, 240, 236)
     muted = (140, 145, 135)
-
+ 
     # --- Page 1: Title ---
     pdf.add_page()
     pdf.set_fill_color(*bg)
     pdf.rect(0, 0, 297, 210, "F")
-
+ 
     pdf.set_font("Helvetica", "B", 10)
     pdf.set_text_color(*gold)
     pdf.set_xy(20, 30)
     pdf.cell(100, 8, "CDON MARKETPLACE")
-
+ 
     pdf.set_font("Helvetica", "B", 28)
     pdf.set_text_color(*white)
     pdf.set_xy(20, 48)
     pdf.cell(260, 16, "Garden & Outdoor:")
     pdf.set_xy(20, 68)
     pdf.cell(260, 16, "The Nordic Spring Opportunity")
-
+ 
     # Gold rule
     pdf.set_fill_color(*gold)
     pdf.rect(20, 92, 40, 3, "F")
-
+ 
     pdf.set_font("Helvetica", "", 11)
     pdf.set_text_color(*muted)
     pdf.set_xy(20, 104)
     pdf.multi_cell(200, 7, "A market overview for merchants looking to capture seasonal demand\nacross Sweden, Denmark, Norway and Finland.")
-
+ 
     pdf.set_xy(20, 130)
     pdf.cell(60, 6, "FOUR MARKETS - ONE PLATFORM")
-
+ 
     pdf.set_font("Helvetica", "", 8)
     pdf.set_text_color(*muted)
     pdf.set_xy(20, 195)
     pdf.cell(120, 5, "CDON - Confidential")
     pdf.set_xy(200, 195)
     pdf.cell(80, 5, f"Spring/Summer 2026  |  Generated {datetime.date.today().strftime('%Y-%m-%d')}", align="R")
-
+ 
     # --- Page 2: Market Overview ---
     pdf.add_page()
     pdf.set_fill_color(*bg)
     pdf.rect(0, 0, 297, 210, "F")
-
+ 
     pdf.set_font("Helvetica", "B", 10)
     pdf.set_text_color(*gold)
     pdf.set_xy(20, 15)
     pdf.cell(100, 8, "MARKET OVERVIEW")
-
+ 
     pdf.set_font("Helvetica", "B", 20)
     pdf.set_text_color(*white)
     pdf.set_xy(20, 28)
     pdf.cell(260, 12, "The Nordic Garden Market at a Glance")
-
+ 
     kpis = [
         ("NORDIC E-COM", "EUR 35.2bn", "Total market"),
         ("GARDEN SHARE", "4.8%", "Of total e-com"),
@@ -496,7 +496,7 @@ def generate_report_pdf():
         ("YOY GROWTH", "+12.3%", "vs. 2025"),
         ("SPRING PEAK", "62%", "Mar-Jul share"),
     ]
-
+ 
     for i, (label, value, sub) in enumerate(kpis):
         x = 20 + i * 54
         pdf.set_fill_color(*panel)
@@ -514,23 +514,23 @@ def generate_report_pdf():
         pdf.set_text_color(*muted)
         pdf.set_xy(x, 67)
         pdf.cell(50, 5, sub, align="C")
-
+ 
     # Country table
     pdf.set_font("Helvetica", "B", 9)
     pdf.set_text_color(*white)
     pdf.set_xy(20, 86)
     pdf.cell(260, 8, "COUNTRY BREAKDOWN")
-
+ 
     headers = ["Country", "Pop (M)", "E-com %", "Market (M EUR)", "Growth %", "AOV (EUR)"]
     col_widths = [50, 30, 30, 45, 35, 35]
-
+ 
     pdf.set_font("Helvetica", "B", 7)
     pdf.set_text_color(*muted)
     y = 96
     for j, h in enumerate(headers):
         pdf.set_xy(20 + sum(col_widths[:j]), y)
         pdf.cell(col_widths[j], 6, h)
-
+ 
     pdf.set_font("Helvetica", "", 8)
     pdf.set_text_color(*white)
     for name, d in countries.items():
@@ -539,39 +539,39 @@ def generate_report_pdf():
         for j, v in enumerate(vals):
             pdf.set_xy(20 + sum(col_widths[:j]), y)
             pdf.cell(col_widths[j], 6, v)
-
+ 
     pdf.set_font("Helvetica", "", 8)
     pdf.set_text_color(*muted)
     pdf.set_xy(20, 195)
     pdf.cell(120, 5, "CDON - Confidential")
     pdf.set_xy(200, 195)
     pdf.cell(80, 5, "Spring/Summer 2026", align="R")
-
+ 
     # --- Page 3: Top Categories ---
     pdf.add_page()
     pdf.set_fill_color(*bg)
     pdf.rect(0, 0, 297, 210, "F")
-
+ 
     pdf.set_font("Helvetica", "B", 10)
     pdf.set_text_color(*gold)
     pdf.set_xy(20, 15)
     pdf.cell(100, 8, "CATEGORY BREAKDOWN")
-
+ 
     pdf.set_font("Helvetica", "B", 20)
     pdf.set_text_color(*white)
     pdf.set_xy(20, 28)
     pdf.cell(260, 12, "Top Subcategories on CDON")
-
+ 
     headers = ["Subcategory", "Share %", "Growth %", "AOV (EUR)", "Listed Items"]
     col_widths = [70, 35, 35, 40, 40]
-
+ 
     pdf.set_font("Helvetica", "B", 7)
     pdf.set_text_color(*muted)
     y = 48
     for j, h in enumerate(headers):
         pdf.set_xy(20 + sum(col_widths[:j]), y)
         pdf.cell(col_widths[j], 6, h)
-
+ 
     pdf.set_font("Helvetica", "", 8)
     pdf.set_text_color(*white)
     for sc in subcategories:
@@ -584,29 +584,29 @@ def generate_report_pdf():
             else:
                 pdf.set_text_color(*white)
             pdf.cell(col_widths[j], 6, v)
-
+ 
     pdf.set_font("Helvetica", "", 8)
     pdf.set_text_color(*muted)
     pdf.set_xy(20, 195)
     pdf.cell(120, 5, "CDON - Confidential")
     pdf.set_xy(200, 195)
     pdf.cell(80, 5, "Spring/Summer 2026", align="R")
-
+ 
     # --- Page 4: Opportunity ---
     pdf.add_page()
     pdf.set_fill_color(*bg)
     pdf.rect(0, 0, 297, 210, "F")
-
+ 
     pdf.set_font("Helvetica", "B", 10)
     pdf.set_text_color(*gold)
     pdf.set_xy(20, 15)
     pdf.cell(100, 8, "THE OPPORTUNITY")
-
+ 
     pdf.set_font("Helvetica", "B", 20)
     pdf.set_text_color(*white)
     pdf.set_xy(20, 28)
     pdf.cell(260, 12, "Why Garden & Outdoor on CDON?")
-
+ 
     reasons = [
         "Peak season (Mar-Jul) captures 62% of annual garden sales",
         "Nordic garden e-commerce growing 12.3% YoY - outpacing total e-com",
@@ -617,7 +617,7 @@ def generate_report_pdf():
         "34% repeat purchase rate - loyal customer base",
         "Cross-sell opportunity with home & living categories",
     ]
-
+ 
     pdf.set_font("Helvetica", "", 10)
     y = 50
     for r in reasons:
@@ -627,17 +627,17 @@ def generate_report_pdf():
         pdf.set_xy(32, y)
         pdf.cell(240, 7, r)
         y += 12
-
+ 
     pdf.set_font("Helvetica", "", 8)
     pdf.set_text_color(*muted)
     pdf.set_xy(20, 195)
     pdf.cell(120, 5, "CDON - Confidential")
     pdf.set_xy(200, 195)
     pdf.cell(80, 5, "Spring/Summer 2026", align="R")
-
+ 
     return bytes(pdf.output())
-
-
+ 
+ 
 # ══════════════════════════════════════════════════════════════════
 # SLIDE 0: TOP BAR (fixed)
 # ══════════════════════════════════════════════════════════════════
@@ -656,8 +656,8 @@ st.markdown("""
 </div>
 <div style="height:56px"></div>
 """, unsafe_allow_html=True)
-
-
+ 
+ 
 # ══════════════════════════════════════════════════════════════════
 # SLIDE 1: TITLE
 # ══════════════════════════════════════════════════════════════════
@@ -671,7 +671,7 @@ with col_dl:
         file_name=f"CDON_Garden_Outdoor_Report_{datetime.date.today().strftime('%Y%m%d')}.pdf",
         mime="application/pdf",
     )
-
+ 
 st.markdown(f"""
 <div style="padding: 60px 0 40px;">
     <div class="section-label">CDON MARKETPLACE</div>
@@ -695,10 +695,10 @@ st.markdown(f"""
     <span>Spring/Summer 2026</span>
 </div>
 """, unsafe_allow_html=True)
-
+ 
 st.markdown("---")
-
-
+ 
+ 
 # ══════════════════════════════════════════════════════════════════
 # SLIDE 2: MARKET OVERVIEW KPIs
 # ══════════════════════════════════════════════════════════════════
@@ -709,7 +709,7 @@ st.markdown(f"""
     <div class="slide-title-sm">The Nordic Garden Market at a Glance</div>
 </div>
 """, unsafe_allow_html=True)
-
+ 
 k1, k2, k3, k4, k5 = st.columns(5)
 with k1:
     st.markdown(f"""<div class="kpi-card">
@@ -741,9 +741,9 @@ with k5:
         <div class="kpi-value gold">62%</div>
         <div class="kpi-sub">Of annual sales in Mar-Jul</div>
     </div>""", unsafe_allow_html=True)
-
+ 
 st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
-
+ 
 # Secondary KPIs
 s1, s2, s3, s4 = st.columns(4)
 with s1:
@@ -770,16 +770,16 @@ with s4:
         <div class="kpi-value">27.5M</div>
         <div class="kpi-sub">Across 4 Nordic markets</div>
     </div>""", unsafe_allow_html=True)
-
+ 
 st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 st.markdown(f"""<div class="slide-footer">
     <span>CDON &mdash; Confidential</span>
     <span>Spring/Summer 2026</span>
 </div>""", unsafe_allow_html=True)
-
+ 
 st.markdown("---")
-
-
+ 
+ 
 # ══════════════════════════════════════════════════════════════════
 # SLIDE 3: TOP CATEGORIES
 # ══════════════════════════════════════════════════════════════════
@@ -790,9 +790,9 @@ st.markdown(f"""
     <div class="slide-title-sm">Top Subcategories on CDON</div>
 </div>
 """, unsafe_allow_html=True)
-
+ 
 col_chart, col_table = st.columns([1, 1])
-
+ 
 with col_chart:
     fig_cat = go.Figure()
     fig_cat.add_trace(go.Bar(
@@ -815,7 +815,7 @@ with col_chart:
         showlegend=False,
     )
     st.plotly_chart(fig_cat, use_container_width=True, key="cat_chart")
-
+ 
 with col_table:
     rows_html = ""
     for sc in subcategories:
@@ -827,7 +827,7 @@ with col_table:
             <td>EUR {sc['aov']}</td>
             <td>{sc['items']:,}</td>
         </tr>"""
-
+ 
     st.markdown(f"""
     <table class="data-table">
         <thead><tr>
@@ -836,15 +836,15 @@ with col_table:
         <tbody>{rows_html}</tbody>
     </table>
     """, unsafe_allow_html=True)
-
+ 
 st.markdown(f"""<div class="slide-footer">
     <span>CDON &mdash; Confidential</span>
     <span>Spring/Summer 2026</span>
 </div>""", unsafe_allow_html=True)
-
+ 
 st.markdown("---")
-
-
+ 
+ 
 # ══════════════════════════════════════════════════════════════════
 # SLIDE 4: COUNTRY DEEP DIVE
 # ══════════════════════════════════════════════════════════════════
@@ -855,9 +855,9 @@ st.markdown(f"""
     <div class="slide-title-sm">Market by Market</div>
 </div>
 """, unsafe_allow_html=True)
-
+ 
 tabs = st.tabs([f'{d["flag_label"]}  {name}' for name, d in countries.items()])
-
+ 
 for i, (country, data) in enumerate(countries.items()):
     with tabs[i]:
         c1, c2, c3, c4 = st.columns(4)
@@ -885,9 +885,9 @@ for i, (country, data) in enumerate(countries.items()):
                 <div class="kpi-value">EUR {data['aov']}</div>
                 <div class="kpi-sub">Garden category average</div>
             </div>""", unsafe_allow_html=True)
-
+ 
         st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
-
+ 
         ic1, ic2 = st.columns(2)
         with ic1:
             cats_html = "".join(f"<li>{c}</li>" for c in data["top_categories"])
@@ -903,15 +903,15 @@ for i, (country, data) in enumerate(countries.items()):
                 <p>{country} represents a {('mature' if data['ecom_penetration'] > 83 else 'growing')} e-commerce market
                 with {('above' if data['garden_index'] > 100 else 'near')}-average garden interest.</p>
             </div>""", unsafe_allow_html=True)
-
+ 
 st.markdown(f"""<div class="slide-footer">
     <span>CDON &mdash; Confidential</span>
     <span>Spring/Summer 2026</span>
 </div>""", unsafe_allow_html=True)
-
+ 
 st.markdown("---")
-
-
+ 
+ 
 # ══════════════════════════════════════════════════════════════════
 # SLIDE 5: SEASONALITY
 # ══════════════════════════════════════════════════════════════════
@@ -922,14 +922,14 @@ st.markdown(f"""
     <div class="slide-title-sm">When Demand Peaks</div>
 </div>
 """, unsafe_allow_html=True)
-
+ 
 col_season, col_search = st.columns(2)
-
+ 
 with col_season:
     months = list(seasonality.keys())
     values = list(seasonality.values())
     colors_bar = [COLORS["gold"] if v > 10 else "rgba(201,168,76,0.35)" for v in values]
-
+ 
     fig_season = go.Figure()
     fig_season.add_trace(go.Bar(
         x=months, y=values,
@@ -957,11 +957,11 @@ with col_season:
         showarrow=False,
     )
     st.plotly_chart(fig_season, use_container_width=True, key="season_chart")
-
+ 
 with col_search:
     weeks = list(search_trends.keys())
     trend_vals = list(search_trends.values())
-
+ 
     fig_search = go.Figure()
     fig_search.add_trace(go.Scatter(
         x=weeks, y=trend_vals,
@@ -990,9 +990,9 @@ with col_search:
         showlegend=False,
     )
     st.plotly_chart(fig_search, use_container_width=True, key="search_chart")
-
+ 
 st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
-
+ 
 t1, t2, t3 = st.columns(3)
 with t1:
     st.markdown(f"""<div class="info-card">
@@ -1009,15 +1009,15 @@ with t3:
         <h4>LATE SEASON (W23-W26)</h4>
         <p>Clearance opportunity. End-of-season deals drive volume. Good time for pool/water accessories push.</p>
     </div>""", unsafe_allow_html=True)
-
+ 
 st.markdown(f"""<div class="slide-footer">
     <span>CDON &mdash; Confidential</span>
     <span>Spring/Summer 2026</span>
 </div>""", unsafe_allow_html=True)
-
+ 
 st.markdown("---")
-
-
+ 
+ 
 # ══════════════════════════════════════════════════════════════════
 # SLIDE 6: COMPETITIVE LANDSCAPE
 # ══════════════════════════════════════════════════════════════════
@@ -1028,7 +1028,7 @@ st.markdown(f"""
     <div class="slide-title-sm">Who Else is Playing?</div>
 </div>
 """, unsafe_allow_html=True)
-
+ 
 comp_rows = ""
 for c in competitors:
     comp_rows += f"""<tr>
@@ -1038,7 +1038,7 @@ for c in competitors:
         <td><span class="metric-highlight">{c['garden_focus']}</span></td>
         <td>{c['price_pos']}</td>
     </tr>"""
-
+ 
 st.markdown(f"""
 <table class="data-table">
     <thead><tr>
@@ -1047,9 +1047,9 @@ st.markdown(f"""
     <tbody>{comp_rows}</tbody>
 </table>
 """, unsafe_allow_html=True)
-
+ 
 st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
-
+ 
 a1, a2 = st.columns(2)
 with a1:
     st.markdown(f"""<div class="info-card">
@@ -1071,15 +1071,15 @@ with a2:
             <li>Cross-border merchants can unlock all four markets instantly</li>
         </ul>
     </div>""", unsafe_allow_html=True)
-
+ 
 st.markdown(f"""<div class="slide-footer">
     <span>CDON &mdash; Confidential</span>
     <span>Spring/Summer 2026</span>
 </div>""", unsafe_allow_html=True)
-
+ 
 st.markdown("---")
-
-
+ 
+ 
 # ══════════════════════════════════════════════════════════════════
 # SLIDE 7: THE OPPORTUNITY / CTA
 # ══════════════════════════════════════════════════════════════════
@@ -1091,7 +1091,7 @@ st.markdown(f"""
     <div class="gold-rule"></div>
 </div>
 """, unsafe_allow_html=True)
-
+ 
 reasons = [
     ("62%", "of annual garden sales happen Mar-Jul - the peak is NOW"),
     ("+12.3%", "YoY market growth - outpacing total Nordic e-commerce"),
@@ -1100,7 +1100,7 @@ reasons = [
     ("58%", "mobile commerce share - CDON's app drives conversion"),
     ("34%", "repeat purchase rate - build a loyal customer base"),
 ]
-
+ 
 for val, desc in reasons:
     st.markdown(f"""
     <div style="display:flex;align-items:center;gap:20px;padding:14px 0;border-bottom:1px solid {COLORS['border']};">
@@ -1110,9 +1110,9 @@ for val, desc in reasons:
         <div style="color:{COLORS['white_soft']};font-family:'Inter',sans-serif;font-size:15px;">{desc}</div>
     </div>
     """, unsafe_allow_html=True)
-
+ 
 st.markdown("<div style='height:30px'></div>", unsafe_allow_html=True)
-
+ 
 st.markdown(f"""
 <div style="text-align:center;padding:40px;background:{COLORS['bg_card']};border:1px solid {COLORS['border']};border-radius:16px;">
     <div style="color:{COLORS['gold']};font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:3px;margin-bottom:12px;">READY TO GROW?</div>
@@ -1120,9 +1120,9 @@ st.markdown(f"""
     <div style="color:{COLORS['white_soft']};font-family:'Inter',sans-serif;font-size:14px;">Contact your Category Manager or visit merchant.cdon.com</div>
 </div>
 """, unsafe_allow_html=True)
-
+ 
 st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
-
+ 
 # Final download button
 col_a, col_b, col_c = st.columns([2, 1, 2])
 with col_b:
@@ -1133,7 +1133,7 @@ with col_b:
         mime="application/pdf",
         key="pdf_bottom",
     )
-
+ 
 st.markdown(f"""
 <div style="text-align:center;padding:40px 0 20px;">
     <div style="color:{COLORS['text_muted']};font-family:'Inter',sans-serif;font-size:11px;">
