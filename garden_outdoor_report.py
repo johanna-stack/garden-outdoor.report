@@ -2,12 +2,12 @@ import streamlit as st
 import plotly.graph_objects as go
 from fpdf import FPDF
 from datetime import datetime
- 
+
 st.set_page_config(page_title="Garden & Outdoor: The Nordic Spring Opportunity", layout="wide", initial_sidebar_state="collapsed")
- 
+
 hide_streamlit_style = """<style>#MainMenu {display: none;}footer {display: none;}header {display: none;}</style>"""
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
- 
+
 global_css = """<style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
 * {margin: 0;padding: 0;box-sizing: border-box;}
@@ -98,7 +98,7 @@ body {background-color: #ffffff;font-family: 'Inter', -apple-system, BlinkMacSys
 .four-card-grid {display: grid;grid-template-columns: repeat(4, 1fr);gap: 20px;margin: 30px 0;}
 </style>"""
 st.markdown(global_css, unsafe_allow_html=True)
- 
+
 def get_flag_svg(country, size=40):
     flags = {
         "denmark": f'<svg viewBox="0 0 60 40" width="{size}" height="{int(size*0.67)}"><rect width="60" height="40" fill="#C8102E"/><rect x="16" width="8" height="40" fill="white"/><rect y="16" width="60" height="8" fill="white"/></svg>',
@@ -107,41 +107,39 @@ def get_flag_svg(country, size=40):
         "finland": f'<svg viewBox="0 0 60 40" width="{size}" height="{int(size*0.67)}"><rect width="60" height="40" fill="white"/><rect x="18" width="8" height="40" fill="#003580"/><rect y="16" width="60" height="8" fill="#003580"/></svg>',
     }
     return flags.get(country.lower(), "")
- 
-slide1_html = """<div class="slide dark-bg" style="padding-top: 100px; padding-bottom: 80px;">
+
+slide1_html = f"""<div class="slide dark-bg" style="padding-top: 100px; padding-bottom: 80px;">
     <div class="slide-label">CDON MARKETPLACE</div>
-    <h1 class="title-slide-main">Garden & Outdoor:<br>The Nordic Spring Opportunity</h1>
+    <h1 class="title-slide-main">Garden &amp; Outdoor:<br>The Nordic Spring Opportunity</h1>
     <div class="gold-bar"></div>
     <p class="title-slide-desc">A market overview for merchants looking to capture seasonal demand across Sweden, Denmark, Norway and Finland.</p>
     <div class="header-row">
-        <div class="flags-row" id="flags-row"></div>
+        <div class="flags-row">{get_flag_svg('denmark', 50)} {get_flag_svg('sweden', 50)} {get_flag_svg('norway', 50)} {get_flag_svg('finland', 50)}</div>
         <div class="flag-label">FOUR MARKETS · ONE PLATFORM</div>
     </div>
     <div class="title-slide-footer">
-        <span>CDON - Confidential</span>
+        <span>CDON — Confidential</span>
         <span>Spring/Summer 2026</span>
     </div>
 </div>"""
 st.markdown(slide1_html, unsafe_allow_html=True)
-flags_html = f"""<script>document.getElementById('flags-row').innerHTML = `{get_flag_svg('denmark', 50)}{get_flag_svg('sweden', 50)}{get_flag_svg('norway', 50)}{get_flag_svg('finland', 50)}`;</script>"""
-st.markdown(flags_html, unsafe_allow_html=True)
- 
+
 slide2_html = """<div class="slide light-bg">
     <div class="slide-label">THE MARKET</div>
     <h2 class="slide-title">Nordics: A Region That Lives Outdoors</h2>
     <div class="gold-bar"></div>
-    <p class="slide-description">The Nordic region is experiencing a sustained boom in outdoor living. As spring approaches, consumers across Sweden, Denmark, Norway, and Finland actively search for garden furniture, outdoor equipment, and recreational gear. Early listing and strategic planning can capture 40% more demand.</p>
+    <p class="slide-description">The Nordic garden and outdoor market is one of Europe's most dynamic. Long winters create concentrated, high-intensity seasonal demand — and consumers are ready to spend when spring arrives.</p>
     <div class="four-card-grid">
         <div class="kpi-card"><div class="kpi-value">€2.5B+</div><div class="kpi-label">Nordic Garden Market</div></div>
         <div class="kpi-card"><div class="kpi-value">$320M</div><div class="kpi-label">Outdoor Equipment</div></div>
         <div class="kpi-card"><div class="kpi-value">25M+</div><div class="kpi-label">Consumers</div></div>
         <div class="kpi-card"><div class="kpi-value">6mo</div><div class="kpi-label">Peak Season</div></div>
     </div>
-    <p style="font-size: 12px; color: #999; margin-top: 20px;">Sources: Google Trends (Nordics), Statista Garden & Outdoor 2025, Nordic E-Commerce Association</p>
+    <p style="font-size: 12px; color: #999; margin-top: 20px;">Sources: Statista, Euromonitor, Nordic industry reports</p>
     <div class="slide-footer"><span>CDON — Garden & Outdoor Opportunity</span><span>02</span></div>
 </div>"""
 st.markdown(slide2_html, unsafe_allow_html=True)
- 
+
 months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 values = [15, 22, 35, 58, 92, 88, 65, 48, 32, 25, 20, 18]
 colors = ['#5a9a7f' if v < 70 else '#3d8b6e' if v < 85 else '#c9a84c' for v in values]
@@ -150,7 +148,7 @@ fig.add_trace(go.Bar(x=months, y=values, marker=dict(color=colors), showlegend=F
 fig.add_annotation(x='MAY', y=92, text='▲ Peak', showarrow=False, yshift=10, font=dict(size=12, color='#c9a84c', family='Inter'))
 fig.add_annotation(x='JUN', y=88, text='▲ Peak', showarrow=False, yshift=10, font=dict(size=12, color='#c9a84c', family='Inter'))
 fig.update_layout(xaxis=dict(showgrid=False, zeroline=False, showline=False, tickfont=dict(family='Inter', size=11, color='#999')), yaxis=dict(showgrid=False, zeroline=False, showline=False, visible=False), plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)', margin=dict(t=40, b=30, l=0, r=0), height=300)
- 
+
 slide3_html = """<div class="slide light-bg">
     <div class="slide-label">SEASONALITY</div>
     <h2 class="slide-title">The Spring Spike Is Real</h2>
@@ -159,32 +157,38 @@ slide3_html = """<div class="slide light-bg">
 st.markdown(slide3_html, unsafe_allow_html=True)
 col1, col2, col3 = st.columns([0.05, 0.9, 0.05])
 with col2:
-    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
- 
+    st.plotly_chart(fig, width='stretch', config={'displayModeBar': False})
+
 slide3b_html = """<div class="slide light-bg" style="padding-top: 0; padding-bottom: 40px;">
     <div style="text-align: center; font-size: 13px; color: #999; margin-bottom: 30px;">Garden & Outdoor Search Interest (Google Trends, Nordics)</div>
     <div class="callout-box"><div class="callout-icon"></div><div class="callout-title">Merchants who list by March capture 40% more of the spring demand curve</div><div class="callout-subtitle">Early listing = better search ranking = more visibility during peak</div></div>
     <div class="slide-footer"><span>CDON — Seasonality Insights</span><span>03</span></div>
 </div>"""
 st.markdown(slide3b_html, unsafe_allow_html=True)
- 
-slide4_html = """<div class="slide dark-bg">
+
+slide4_html = f"""<div class="slide dark-bg">
     <div class="slide-label">THE SPRING WAVE</div>
     <h2 style="color: white; font-size: 42px; font-weight: 800; line-height: 1.2; margin-bottom: 20px;">One Season. Four Markets.<br>Four Launch Windows.</h2>
     <div class="gold-bar"></div>
-    <p class="slide-description">Each Nordic market has its own spring rhythm. Denmark kicks off in late February, followed by Sweden in March, and Norway and Finland peak in April-May. Merchants who understand these waves can extend their peak season from March all the way through July.</p>
+    <p class="slide-description">Spring doesn't arrive everywhere at once. Denmark leads by weeks, followed by Sweden, Norway, and finally Finland. Smart merchants align their listings with each market's timing.</p>
     <div class="timeline"><div class="timeline-line"></div>
-    <div class="timeline-months"><span class="timeline-month">JAN</span><span class="timeline-month">FEB</span><span class="timeline-month highlight">MAR</span><span class="timeline-month highlight">APR</span><span class="timeline-month highlight">MAY</span><span class="timeline-month highlight">JUN</span><span class="timeline-month">JUL</span><span class="timeline-month">AUG</span></div></div>
-    <div class="timeline-cards">
-        <div class="timeline-card"><div class="timeline-card-month">March-April</div><div class="timeline-card-desc">First movers</div></div>
-        <div class="timeline-card"><div class="timeline-card-month">April-May</div><div class="timeline-card-desc">Main wave</div></div>
-        <div class="timeline-card"><div class="timeline-card-month">April-June</div><div class="timeline-card-desc">Outdoor season</div></div>
-        <div class="timeline-card"><div class="timeline-card-month">May-July</div><div class="timeline-card-desc">Mökki season</div></div>
+    <div style="display: flex; justify-content: space-around; margin: 20px 0 10px;">
+        <div style="text-align: center;">{get_flag_svg('denmark', 40)}<div style="color: white; font-weight: 700; font-size: 13px; margin-top: 5px;">Denmark</div></div>
+        <div style="text-align: center;">{get_flag_svg('sweden', 40)}<div style="color: white; font-weight: 700; font-size: 13px; margin-top: 5px;">Sweden</div></div>
+        <div style="text-align: center;">{get_flag_svg('norway', 40)}<div style="color: white; font-weight: 700; font-size: 13px; margin-top: 5px;">Norway</div></div>
+        <div style="text-align: center;">{get_flag_svg('finland', 40)}<div style="color: white; font-weight: 700; font-size: 13px; margin-top: 5px;">Finland</div></div>
     </div>
-    <div class="slide-footer"><span>CDON — The Spring Wave</span><span>04</span></div>
+    <div class="timeline-months"><span class="timeline-month">Jan</span><span class="timeline-month">Feb</span><span class="timeline-month highlight">Mar</span><span class="timeline-month highlight">Apr</span><span class="timeline-month highlight">May</span><span class="timeline-month highlight">Jun</span><span class="timeline-month">Jul</span><span class="timeline-month">Aug</span></div></div>
+    <div class="timeline-cards">
+        <div class="timeline-card"><div class="timeline-card-month">March–April</div><div class="timeline-card-desc">First movers</div></div>
+        <div class="timeline-card"><div class="timeline-card-month">April–May</div><div class="timeline-card-desc">Main wave</div></div>
+        <div class="timeline-card"><div class="timeline-card-month">April–June</div><div class="timeline-card-desc">Outdoor season</div></div>
+        <div class="timeline-card"><div class="timeline-card-month">May–July</div><div class="timeline-card-desc">Mokki season</div></div>
+    </div>
+    <div class="slide-footer"><span>CDON — Garden &amp; Outdoor Opportunity</span><span>04</span></div>
 </div>"""
 st.markdown(slide4_html, unsafe_allow_html=True)
- 
+
 slide5_html = f"""<div class="slide white-bg">
     <div class="country-title">DENMARK</div>
     <div class="two-col-layout">
@@ -229,7 +233,7 @@ slide5_html = f"""<div class="slide white-bg">
     <div class="slide-footer"><span>CDON — Denmark Market Spotlight</span><span>05</span></div>
 </div>"""
 st.markdown(slide5_html, unsafe_allow_html=True)
- 
+
 slide6_html = f"""<div class="slide white-bg">
     <div class="country-title">SWEDEN</div>
     <div class="two-col-layout">
@@ -274,7 +278,7 @@ slide6_html = f"""<div class="slide white-bg">
     <div class="slide-footer"><span>CDON — Sweden Market Spotlight</span><span>06</span></div>
 </div>"""
 st.markdown(slide6_html, unsafe_allow_html=True)
- 
+
 slide7_html = f"""<div class="slide white-bg">
     <div class="country-title">NORWAY</div>
     <div class="two-col-layout">
@@ -319,7 +323,7 @@ slide7_html = f"""<div class="slide white-bg">
     <div class="slide-footer"><span>CDON — Norway Market Spotlight</span><span>07</span></div>
 </div>"""
 st.markdown(slide7_html, unsafe_allow_html=True)
- 
+
 slide8_html = f"""<div class="slide white-bg">
     <div class="country-title">FINLAND</div>
     <div class="two-col-layout">
@@ -364,7 +368,7 @@ slide8_html = f"""<div class="slide white-bg">
     <div class="slide-footer"><span>CDON — Finland Market Spotlight</span><span>08</span></div>
 </div>"""
 st.markdown(slide8_html, unsafe_allow_html=True)
- 
+
 slide9_html = """<div class="slide warm-bg">
     <div class="slide-label">CONSUMER TRENDS</div>
     <h2 class="slide-title">What Nordic Consumers Are Searching For</h2>
@@ -382,7 +386,7 @@ slide9_html = """<div class="slide warm-bg">
     <div class="slide-footer"><span>CDON — Consumer Trends</span><span>09</span></div>
 </div>"""
 st.markdown(slide9_html, unsafe_allow_html=True)
- 
+
 slide10_html = """<div class="slide white-bg">
     <div class="slide-label">CATEGORY SPOTLIGHT</div>
     <div class="two-col-layout">
@@ -405,7 +409,7 @@ slide10_html = """<div class="slide white-bg">
     <div class="slide-footer"><span>CDON — Garden Category Spotlight</span><span>10</span></div>
 </div>"""
 st.markdown(slide10_html, unsafe_allow_html=True)
- 
+
 slide11_html = f"""<div class="slide white-bg">
     <div class="slide-label">CATEGORY SPOTLIGHT</div>
     <div class="two-col-layout">
@@ -432,7 +436,7 @@ slide11_html = f"""<div class="slide white-bg">
     <div class="slide-footer"><span>CDON — Outdoor & Adventure Category Spotlight</span><span>11</span></div>
 </div>"""
 st.markdown(slide11_html, unsafe_allow_html=True)
- 
+
 slide12_html = """<div class="slide dark-bg">
     <div class="slide-label">YOUR OPPORTUNITY</div>
     <h2 style="color: white; font-size: 42px; font-weight: 800; line-height: 1.2; margin-bottom: 20px;">4 Markets. 25M+ Consumers.<br>One Platform.</h2>
@@ -451,37 +455,177 @@ slide12_html = """<div class="slide dark-bg">
     <div class="slide-footer"><span>CDON - Confidential</span><span style="font-size: 24px; font-weight: 700; color: #c9a84c;">CDON</span></div>
 </div>"""
 st.markdown(slide12_html, unsafe_allow_html=True)
- 
+
 def generate_pdf():
-    pdf = FPDF(orientation='P', unit='mm', format='A4')
+    pdf = FPDF(orientation='L', unit='mm', format='A4')
     pdf.set_auto_page_break(auto=False)
-    pdf.add_page()
-    pdf.set_margins(15, 15, 15)
-    pdf.set_fill_color(26, 71, 42)
-    pdf.rect(0, 0, 210, 297, 'F')
-    pdf.set_text_color(255, 255, 255)
-    pdf.set_font("Helvetica", "B", 12)
-    pdf.text(15, 40, "CDON MARKETPLACE")
-    pdf.set_xy(15, 50)
-    pdf.set_font("Helvetica", "B", 32)
-    pdf.multi_cell(180, 15, "Garden & Outdoor: The Nordic Spring Opportunity", align='L')
-    pdf.set_x(15)
-    pdf.set_font("Helvetica", "", 11)
-    pdf.multi_cell(180, 6, "A market overview for merchants looking to capture seasonal demand across Sweden, Denmark, Norway and Finland.", align='L')
-    pdf.text(15, 270, "CDON - Confidential")
-    pdf.text(170, 270, "Spring/Summer 2026")
-    for i in range(2, 13):
+    W, H = 297, 210
+    M = 20
+
+    def safe(t):
+        return t.replace('\u2019',"'").replace('\u2018',"'").replace('\u201c','"').replace('\u201d','"').replace('\u2013','-').replace('\u2014','-').replace('\u2022','-').replace('\u00f6','o').replace('\u00e9','e')
+
+    def dark_slide(label, title, body, num):
+        pdf.add_page()
+        pdf.set_fill_color(26, 71, 42)
+        pdf.rect(0, 0, W, H, 'F')
+        pdf.set_xy(M, 25)
+        pdf.set_font("Helvetica", "B", 10)
+        pdf.set_text_color(201, 168, 76)
+        pdf.cell(0, 8, safe(label))
+        pdf.set_xy(M, 38)
+        pdf.set_font("Helvetica", "B", 28)
+        pdf.set_text_color(255, 255, 255)
+        pdf.multi_cell(W - 2*M, 12, safe(title))
+        y = pdf.get_y() + 5
+        pdf.set_fill_color(201, 168, 76)
+        pdf.rect(M, y, 30, 2, 'F')
+        pdf.set_xy(M, y + 10)
+        pdf.set_font("Helvetica", "", 11)
+        pdf.set_text_color(255, 255, 255)
+        pdf.multi_cell(W/2, 6, safe(body))
+        pdf.set_xy(M, H - 15)
+        pdf.set_font("Helvetica", "", 8)
+        pdf.set_text_color(200, 200, 200)
+        pdf.cell((W - 2*M)/2, 5, "CDON - Garden & Outdoor Opportunity")
+        pdf.cell((W - 2*M)/2, 5, f"{num:02d}", align='R')
+
+    def light_slide(label, title, body, num, kpis=None, items=None):
         pdf.add_page()
         pdf.set_fill_color(250, 250, 248)
-        pdf.rect(0, 0, 210, 297, 'F')
-        pdf.set_text_color(26, 71, 42)
+        pdf.rect(0, 0, W, H, 'F')
+        pdf.set_xy(M, 20)
+        pdf.set_font("Helvetica", "B", 10)
+        pdf.set_text_color(201, 168, 76)
+        pdf.cell(0, 8, safe(label))
+        pdf.set_xy(M, 32)
         pdf.set_font("Helvetica", "B", 24)
-        pdf.text(15, 30, f"Slide {i}")
-        pdf.set_font("Helvetica", "", 9)
-        pdf.text(15, 280, "CDON - Garden & Outdoor Report")
-        pdf.text(175, 280, f"{i:02d}")
+        pdf.set_text_color(26, 71, 42)
+        pdf.multi_cell(W/2, 10, safe(title))
+        y = pdf.get_y() + 3
+        pdf.set_fill_color(201, 168, 76)
+        pdf.rect(M, y, 30, 2, 'F')
+        pdf.set_xy(M, y + 8)
+        pdf.set_font("Helvetica", "", 10)
+        pdf.set_text_color(85, 85, 85)
+        pdf.multi_cell(W/2 - M, 5, safe(body))
+        if kpis:
+            kx = W/2 + 10
+            ky = 25
+            for val, lbl in kpis:
+                pdf.set_xy(kx, ky)
+                pdf.set_font("Helvetica", "B", 18)
+                pdf.set_text_color(26, 71, 42)
+                pdf.cell(60, 10, safe(val))
+                pdf.set_xy(kx, ky + 10)
+                pdf.set_font("Helvetica", "", 7)
+                pdf.set_text_color(120, 120, 120)
+                pdf.cell(60, 5, safe(lbl))
+                kx += 65
+                if kx > W - M:
+                    kx = W/2 + 10
+                    ky += 28
+        if items:
+            iy = pdf.get_y() + 10 if not kpis else 85
+            pdf.set_xy(W/2 + 10, iy)
+            pdf.set_font("Helvetica", "B", 9)
+            pdf.set_text_color(26, 71, 42)
+            pdf.cell(0, 6, "TOP 10 TRENDING PRODUCTS")
+            iy += 10
+            for idx, (name, desc) in enumerate(items):
+                col = 0 if idx % 2 == 0 else 1
+                row = idx // 2
+                px = W/2 + 10 + col * 65
+                py = iy + row * 14
+                pdf.set_xy(px, py)
+                pdf.set_font("Helvetica", "B", 8)
+                pdf.set_text_color(26, 71, 42)
+                pdf.cell(0, 5, safe(f"{idx+1}. {name}"))
+                pdf.set_xy(px, py + 5)
+                pdf.set_font("Helvetica", "", 7)
+                pdf.set_text_color(150, 150, 150)
+                pdf.cell(0, 4, safe(desc))
+        pdf.set_xy(M, H - 15)
+        pdf.set_font("Helvetica", "", 8)
+        pdf.set_text_color(180, 180, 180)
+        pdf.cell((W - 2*M)/2, 5, "CDON - Garden & Outdoor Opportunity")
+        pdf.cell((W - 2*M)/2, 5, f"{num:02d}", align='R')
+
+    # Slide 1: Title
+    dark_slide("CDON MARKETPLACE", "Garden & Outdoor:\nThe Nordic Spring Opportunity",
+        "A market overview for merchants looking to capture seasonal demand across Sweden, Denmark, Norway and Finland.\n\nFour Markets - One Platform  |  DK  SE  NO  FI", 1)
+
+    # Slide 2: The Market
+    light_slide("THE MARKET", "Nordics: A Region That Lives Outdoors",
+        "The Nordic garden and outdoor market is one of Europe's most dynamic. Long winters create concentrated, high-intensity seasonal demand - and consumers are ready to spend when spring arrives.",
+        2, kpis=[("E2.5B+","NORDIC GARDEN MARKET"),("$320M","OUTDOOR EQUIPMENT"),("25M+","CONSUMERS"),("6mo","PEAK SEASON")])
+
+    # Slide 3: Seasonality
+    light_slide("SEASONALITY", "The Spring Spike Is Real",
+        "Consumer search interest surges 3-5x from winter to peak season. Those who are listed early capture the full wave.\n\nMerchants who list by March capture 40% more of the spring demand curve.\nEarly listing = better search ranking = more visibility during peak.", 3)
+
+    # Slide 4: Spring Wave
+    dark_slide("THE SPRING WAVE", "One Season. Four Markets.\nFour Launch Windows.",
+        "Spring doesn't arrive everywhere at once. Denmark leads by weeks, followed by Sweden, Norway, and finally Finland.\n\nDenmark: March-April (First movers)\nSweden: April-May (Main wave)\nNorway: April-June (Outdoor season)\nFinland: May-July (Mokki season)", 4)
+
+    # Slide 5: Denmark
+    dk_products = [("Cane-line Moments Sofa","Premium outdoor seating"),("Weber Spirit E-325","Best-selling gas grill"),
+        ("Juliana Grand Oase","Danish glass greenhouse"),("Ooni Karu 16 Pizza Oven","Multi-fuel outdoor cooking"),
+        ("Gardena SILENO City 600","Entry-level robot mower"),("Houe Click Dining Set","Scandinavian design outdoor"),
+        ("Kamado Joe Classic III","Premium ceramic grill"),("SACKit Cobana Lounge","Danish outdoor furniture"),
+        ("Palram Hybrid Greenhouse","Polycarbonate raised bed"),("Skagerak Riviera Lounger","Teak outdoor furniture")]
+    light_slide("DENMARK", "The First Movers",
+        "Denmark enjoys the earliest spring in the Nordics, with consumer search interest peaking 3-4 weeks ahead of Sweden. Danish shoppers start browsing garden products as early as late February.",
+        5, kpis=[("Mar-Apr","PEAK GARDEN SEASON"),("3-4 wks","AHEAD OF SWEDEN"),("High","E-COMMERCE MATURITY"),("Strong","OUTDOOR COOKING")], items=dk_products)
+
+    # Slide 6: Sweden
+    se_products = [("Husqvarna Automower 450X","AI-vision robot mower"),("Gardena SILENO Life 1500","Mid-range robot mower"),
+        ("STIHL HSA 60 Trimmer","Battery-powered, top-rated"),("Sweden Greenhouse Classic","Freestanding glass greenhouse"),
+        ("Brafab Sottenville Lounge","Swedish outdoor furniture"),("Einhell GE-CM 36 Li","Cordless electric mower"),
+        ("Halsing Outdoor Kitchen","Swedish modular kitchens"),("Gardena Smart Water Control","Smart irrigation system"),
+        ("Inflatable SUP Boards","All-round paddleboard kits"),("Skargards Hot Tub","Swedish outdoor hot tubs")]
+    light_slide("SWEDEN", "The Main Wave",
+        "Sweden is the largest Nordic garden market by volume, with a concentrated peak in April-May. Swedish consumers invest heavily in their outdoor spaces.",
+        6, kpis=[("Apr-May","PEAK GARDEN SEASON"),("22.5%","ROBOT MOWER CAGR"),("14.1%","ELECTRIC TOOLS CAGR"),("#1","NORDIC GARDEN MARKET")], items=se_products)
+
+    # Slide 7: Norway
+    no_products = [("Hilleberg Anjan 2 Tent","Premium hiking tent"),("Norrona Trollveggen Shell","All-weather outerwear"),
+        ("Red Paddle Co Sport 11'3","Top-rated inflatable SUP"),("Weber Genesis E-435","Premium gas grill"),
+        ("Husqvarna Automower 320","Wire-free robot mower"),("Fiskars X27 Splitting Axe","Cabin & firewood essential"),
+        ("Helinox Chair One","Ultralight camping chair"),("Abu Garcia Revo Beast X","Premium baitcasting reel"),
+        ("Ooni Volt 12 Electric Oven","Indoor/outdoor pizza oven"),("Garmin inReach Mini 2","Satellite communicator")]
+    light_slide("NORWAY", "The Outdoor Nation",
+        "Outdoor life is in Norway's DNA. With 77% of the population engaging in weekly outdoor activities, Norwegian consumers are premium-oriented buyers with the highest average order values.",
+        7, kpis=[("77%","WEEKLY OUTDOOR ACTIVITY"),("Highest","AVERAGE ORDER VALUE"),("Apr-Jun","PEAK SEASON"),("Premium","CONSUMER ORIENTATION")], items=no_products)
+
+    # Slide 8: Finland
+    fi_products = [("Kirami FinVision Sauna","Outdoor sauna"),("Muurikka Electric Smoker","Finnish cooking staple"),
+        ("Fiskars Norden N12 Axe","Premium Finnish axe"),("Rapala X-Rap Fishing Lures","Iconic Finnish tackle"),
+        ("Husqvarna Automower 405X","Robot mower for cottages"),("Savotta Hiisi 20 Backpack","Military-grade daypack"),
+        ("HAY Palissade Table","Nordic garden furniture"),("Kirami Hot Tub","Finnish outdoor tub"),
+        ("Shimano Stradic FL Reel","Spinning reel for pike"),("MSR Hubba Hubba NX Tent","2-person hiking tent")]
+    light_slide("FINLAND", "Mokki & Nature",
+        "Finland's later spring (May-June) extends the selling season, and the iconic summer cottage (mokki) culture drives massive demand. With 1.5 million fishers (27% of the population), outdoor recreation is deeply embedded in Finnish life.",
+        8, kpis=[("1.5M","ACTIVE FISHERS"),("27%","POPULATION FISHING"),("May-Jul","PEAK SEASON"),("Top","CAMPING SPEND / CAPITA")], items=fi_products)
+
+    # Slide 9: Consumer Trends
+    light_slide("CONSUMER TRENDS", "What Nordic Consumers Are Searching For",
+        "Google Trends data reveals the product categories driving growth across all four markets.\n\nRobot Mowers: 22.5% CAGR\nGarden Furniture: Consistent demand\nSUP / Paddleboards: 7-10% CAGR\nCamping Equipment: 4-6% CAGR\nOutdoor Cooking: 5-7% CAGR\nElectric Garden Tools: 14.1% CAGR", 9)
+
+    # Slide 10: Category Spotlight - Garden
+    light_slide("CATEGORY SPOTLIGHT", "Garden",
+        "The garden category spans everything from outdoor furniture to irrigation systems. Consumers are upgrading their outdoor spaces into extensions of their living rooms.\n\n01 Outdoor Furniture - Lounge sets, dining tables, parasols\n02 Garden Tools & Machines - Robot mowers, trimmers\n03 Cultivation & Growing - Greenhouses, raised beds\n04 Pool & Spa - Above-ground pools, hot tubs\n05 Outdoor Cooking - Grills, smokers, pizza ovens\n\nPeak Season: March - June", 10)
+
+    # Slide 11: Category Spotlight - Outdoor
+    light_slide("CATEGORY SPOTLIGHT", "Outdoor & Adventure",
+        "The Nordic outdoor equipment market is valued at over $310-320 million. From hiking Norwegian fjords to fishing in Finnish lakes, outdoor recreation is a way of life.\n\n01 Camping & Hiking - Tents, sleeping bags, backpacks\n02 Fishing - Rods, reels, tackle, waders\n03 Water Sports - SUP boards, kayaks, wetsuits\n04 Hunting & Optics - Hunting gear, binoculars, knives\n\nNorway: 77% weekly participation\nFinland: 1.5M fishers\nSweden: Largest camping market\nDenmark: Strong watersports", 11)
+
+    # Slide 12: Your Opportunity
+    dark_slide("YOUR OPPORTUNITY", "4 Markets. 25M+ Consumers.\nOne Platform.",
+        "DK -> SE -> NO -> FI\nThe spring wave - March through July\n\n+ List your products before March to capture Denmark's early wave\n+ Reach all four Nordic markets from a single platform\n+ Tap into consumers actively searching for your products\n+ Benefit from growing categories: robot mowers, SUP, outdoor cooking & more\n\nReady to grow with us?\nContact your CDON Merchant Success Manager to get started", 12)
+
     return bytes(pdf.output())
- 
+
 st.markdown("<div style='margin-top: 80px;'></div>", unsafe_allow_html=True)
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
